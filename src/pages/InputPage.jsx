@@ -61,57 +61,66 @@ export function InputPage() {
   }
 
   return (
-    <div className="space-y-8">
-      <Card className="border-white/10 bg-card/40 backdrop-blur-sm">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <UserPlus className="h-6 w-6 text-purple-400" />
-            Tambah Peserta Manual
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-2">
-            <Input
-              placeholder="Ketik nama peserta..."
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              onKeyDown={handleKeyDown}
-              className="bg-secondary/50 border-white/10"
-            />
-            <Button onClick={handleAddSingle} className="shrink-0 gap-2 bg-primary hover:bg-primary/90">
-              <UserPlus className="h-4 w-4" /> Tambah
+    // Membagi layar menjadi 12 kolom virtual
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      {/* KOLOM KIRI (Form Input & Import) - Mengambil 4 porsi lebar */}
+      <div className="lg:col-span-4 flex flex-col gap-6">
+        <Card className="border-white/10 bg-zinc-900/40 backdrop-blur-xl shadow-lg">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <UserPlus className="h-6 w-6 text-purple-400" />
+              Tambah Peserta Manual
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-2">
+              <Input
+                placeholder="Ketik nama peserta..."
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="bg-secondary/50 border-white/10"
+              />
+              <Button onClick={handleAddSingle} className="shrink-0 gap-2 bg-primary hover:bg-primary/90">
+                <UserPlus className="h-4 w-4" /> Tambah
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-white/10 bg-zinc-900/40 backdrop-blur-xl shadow-lg">
+          <CardHeader>
+            <CardTitle>Import Massal (Paste dari Clipboard)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ImportTextarea onImport={handleImport} />
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* KOLOM KANAN (Tabel Peserta) - Mengambil 8 porsi lebar sisanya */}
+      <div className="lg:col-span-8 flex flex-col">
+        <Card className="border-white/10 bg-zinc-900/40 backdrop-blur-xl shadow-lg flex-1">
+          <CardHeader className="flex flex-row justify-between items-center">
+            <CardTitle>Daftar Peserta ({participants.length})</CardTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setResetDialogOpen(true)}
+              disabled={participants.length === 0}
+              className="text-red-400 hover:text-red-300"
+            >
+              Reset Semua
             </Button>
-          </div>
-        </CardContent>
-      </Card>
+          </CardHeader>
+          <CardContent>
+            <NameTable participants={participants} onDelete={deleteParticipant} />
+          </CardContent>
+        </Card>
+      </div>
 
-      <Card className="border-white/10 bg-card/40 backdrop-blur-sm">
-        <CardHeader>
-          <CardTitle>Import Massal (Paste dari Clipboard)</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ImportTextarea onImport={handleImport} />
-        </CardContent>
-      </Card>
-
-      <Card className="border-white/10 bg-card/40 backdrop-blur-sm">
-        <CardHeader className="flex flex-row justify-between items-center">
-          <CardTitle>Daftar Peserta ({participants.length})</CardTitle>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setResetDialogOpen(true)}
-            disabled={participants.length === 0}
-            className="text-red-400 hover:text-red-300"
-          >
-            Reset Semua
-          </Button>
-        </CardHeader>
-        <CardContent>
-          <NameTable participants={participants} onDelete={deleteParticipant} />
-        </CardContent>
-      </Card>
-
+      {/* Dialog Konfirmasi diletakkan di luar grid agar tidak merusak layout */}
       <ConfirmDialog
         open={resetDialogOpen}
         onOpenChange={setResetDialogOpen}

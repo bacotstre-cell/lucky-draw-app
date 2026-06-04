@@ -8,6 +8,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  base: '/lucky-draw-app/',
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"), // Tambahkan ini
